@@ -85,7 +85,7 @@ type Pool struct {
 	closed atomic.Bool
 }
 
-// conn represents an AMTP client connection in the pool.
+// conn represents an SMTP client connection in the pool.
 type conn struct {
 	conn *smtp.Client
 
