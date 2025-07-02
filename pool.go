@@ -140,6 +140,7 @@ func (p *Pool) Send(e Email) error {
 		// Get a connection from the pool.
 		c, err := p.borrowConn()
 		if err != nil {
+			lastErr = err
 			if canRetry(err) {
 				continue
 			}
@@ -160,7 +161,6 @@ func (p *Pool) Send(e Email) error {
 		if !retry {
 			return err
 		}
-
 	}
 
 	return lastErr
