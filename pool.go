@@ -295,9 +295,11 @@ func (p *Pool) returnConn(c *conn, lastErr error) (err error) {
 	}()
 
 	if lastErr != nil {
-		// Any error, except for textproto.Error (according to jordan-wright/email),
-		// is a bad connection that should be killed.
-		if _, ok := lastErr.(*textproto.Error); !ok {
+		// All non-textproto errors should close the connection.
+		if err, ok := lastErr.(*textproto.Error); !ok {
+			return lastErr
+		} else if err.Code == 421 {
+			// As an exception, 421 (rate-limit) errors should also close the connection.
 			return lastErr
 		}
 	}
